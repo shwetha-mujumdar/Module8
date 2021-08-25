@@ -1,9 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import { useRef } from 'react';
+import { useRef,useState } from 'react';
 
 export default function Home() {
+
+const [feedbackItems,setFeedbackItems]=useState([])
 
 const emailInputRef=useRef();
 const feedbackInputRef=useRef();
@@ -31,6 +33,21 @@ fetch('/api/feedback' , {
 // =------ important step ends-------
 
 }
+function loadFeedbackHandler(params) {
+ 
+  fetch('/api/feedback')
+  .then(response => response.json())
+  .then(data => {
+    setFeedbackItems(data.feedback)
+  });  
+  
+  // { email:'test@test.com' , text:'some feedback text' }
+  
+  // =------ important step ends-------
+  
+
+  
+}
 
   return (
     <div>
@@ -46,6 +63,14 @@ fetch('/api/feedback' , {
         </div>
         <button>Send Feedback </button>
       </form>
+      <hr/>
+      <button onClick={loadFeedbackHandler}>Load Feedback</button>
+      <ul>
+        {feedbackItems.map(items=>
+        <li key={items.id}>{items.email}{items.text}</li>
+
+        )}
+      </ul>
     </div>
   );
 }
